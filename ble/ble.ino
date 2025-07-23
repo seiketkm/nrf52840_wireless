@@ -17,7 +17,9 @@ static BLEDis   bledis;
 
 void setup() {
   Serial.begin(115200);
-  while (!Serial);
+  unsigned long start = millis();
+  while (!Serial && millis() - start < 3000);
+  pinMode(LED_BUILTIN, OUTPUT);
   if (lsm6ds3.begin() != 0) {
       Serial.println("Device error");
   } else {
@@ -60,6 +62,11 @@ void loop() {
     Serial.write(buf, len);
     Serial.println();
     bleuart.write(buf, len);
+
+    // 🔵 LEDを青く光らせる（点灯）
+    digitalWrite(LED_BUILTIN, LOW);  // ON
+    delay(200);                       // 200ms 点灯
+    digitalWrite(LED_BUILTIN, HIGH);   // OFF
   }
   uint8_t readDataByte = 0;
   //Read the wake-up source register
